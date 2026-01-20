@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
@@ -18,19 +17,21 @@ const AppContent: React.FC = () => {
     return localStorage.getItem('theme') === 'dark';
   });
   
-  // تحديث الصورة الرئيسية بصورة الدكتور الجديدة
+  // حالة لإدارة صور الموقع التي يمكن للمساعد الذكي تغييرها
   const [siteImages, setSiteImages] = useState<SiteImages>({
-    hero: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=800&h=1000',
+    hero: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1920',
     clinic: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=800',
     surgery: 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800',
     colon: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&q=80&w=800',
   });
 
+  // تأثير التحميل الأولي للموقع
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
+  // مزامنة وضع الثيم (فاتح/داكن) مع المتصفح والتخزين المحلي
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
@@ -41,6 +42,7 @@ const AppContent: React.FC = () => {
     }
   }, [isDarkMode]);
 
+  // التمرير لأعلى الصفحة عند تغيير المسار (Navigation)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [location]);
@@ -54,9 +56,11 @@ const AppContent: React.FC = () => {
   if (isLoading) return <Loader />;
 
   return (
-    <div className="flex flex-col min-h-screen transition-colors duration-500 font-cairo">
+    <div className="flex flex-col min-h-screen transition-colors duration-500 font-cairo bg-slate-50 dark:bg-dark-navy text-slate-900 dark:text-white">
+      {/* رأس الصفحة مع إدارة الثيم */}
       <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       
+      {/* المحتوى الرئيسي المتغير */}
       <main className="flex-grow pt-20 page-transition">
         <Routes>
           <Route path="/" element={<Home siteImages={siteImages} />} />
@@ -66,9 +70,9 @@ const AppContent: React.FC = () => {
         </Routes>
       </main>
 
-      {/* Floating WhatsApp Button */}
+      {/* زر الواتساب العائم للتواصل السريع */}
       <a 
-        href={`https://wa.me/201118250389`} 
+        href={`https://wa.me/20${CLINIC_INFO.whatsapp.substring(1)}`} 
         target="_blank" 
         rel="noopener noreferrer"
         className="fixed bottom-24 right-6 z-50 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center animate-bounce"
@@ -79,7 +83,10 @@ const AppContent: React.FC = () => {
         </svg>
       </a>
 
+      {/* تذييل الصفحة */}
       <Footer />
+
+      {/* المساعد الذكي AI */}
       <ChatBot onImageUpdate={handleImageUpdate} />
     </div>
   );
@@ -94,3 +101,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+
